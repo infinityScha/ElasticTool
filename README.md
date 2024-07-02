@@ -31,3 +31,13 @@ Example scripts used to create figures for the paper are provided. The general w
 - **Geometry.jl**: Defines the geometrical structures that form the model
 - **Remesh.jl**: Provides remeshing functionality
 - **SaveStates.jl**: Manages saving, loading, and modifying configurations
+
+## Citation
+
+When using this code or some modification of it. please cite the paper (arxiv if needed ***):
+
+doi ***
+
+As the model is based on Ryham's model, please cite his papers as well:
+
+doi ***
