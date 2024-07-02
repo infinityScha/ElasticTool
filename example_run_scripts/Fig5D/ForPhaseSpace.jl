@@ -42,7 +42,7 @@ if isfile(MAIN_PATH*"states/final.coords")
     # find the 2nd largest index
     order1 = sortperm(Vs, rev=true)
     # make an initial configuration of the ADE model to get all the required volumes from
-    vol_patches_open = vesicle_manuscript_ADE(ν=parse(Float64, ν_CURR), m₀_4π=parse(Float64, m₀_4π_CURR), is_open = true, h₀=0.5)[3]
+    vol_patches_open = vesicle_manuscript_ADE(ν=parse(Float64, ν_CURR), m₀_4π=parse(Float64, m₀_4π_CURR), is_open = true, h₀=0.5, α=16.0)[3]
     order2 = sortperm([vol_patches_open[i].v₀ for i in 1:3], rev=true)
     for (oi1, oi2) in zip(order1, order2)
         change_patch_property(MAIN_PATH*"states/final.vol_patches", oi1, "V0", vol_patches_open[oi2].v₀)
@@ -68,7 +68,7 @@ else
     # find the 2nd largest index
     order1 = sortperm(Vs, rev=true)
     # make an initial configuration of the ADE model to get all the required volumes from
-    vol_patches_open = vesicle_manuscript_ADE(ν=parse(Float64, ν_CURR), m₀_4π=parse(Float64, m₀_4π_CURR), is_open = true, h₀=0.5)[3]
+    vol_patches_open = vesicle_manuscript_ADE(ν=parse(Float64, ν_CURR), m₀_4π=parse(Float64, m₀_4π_CURR), is_open = true, h₀=0.5, α=16.0)[3]
     order2 = sortperm([vol_patches_open[i].v₀ for i in 1:3], rev=true)
     for (oi1, oi2) in zip(order1, order2)
         change_patch_property(MAIN_PATH*"initial.vol_patches", oi1, "V0", vol_patches_open[oi2].v₀)

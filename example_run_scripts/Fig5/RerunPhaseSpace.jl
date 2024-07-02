@@ -38,22 +38,11 @@ include("../../ElasticTool.jl")
 if isfile(MAIN_PATH*"states/final.coords")
     println("The run was already done, running a bit of the final energy to get the final energy value")
     change_patch_property(MAIN_PATH*"states/final.rem_patches", 1, "RESOLUTION", 1.0)
-    Vs = [parse(Float64, get_patch_property(MAIN_PATH * "states/final.vol_patches", i, "V0")) for i in 1:3]
-    # find the 2nd largest index
-    order1 = sortperm(Vs, rev=true)
-    # make an initial configuration of the ADE model to get all the required volumes from
-    vol_patches_open = vesicle_manuscript_ADE(ν=parse(Float64, ν_CURR), m₀_4π=parse(Float64, m₀_4π_CURR), is_open = true, h₀=0.5)[3]
-    order2 = sortperm([vol_patches_open[i].v₀ for i in 1:3], rev=true)
-    for (oi1, oi2) in zip(order1, order2)
-        change_patch_property(MAIN_PATH*"states/final.vol_patches", oi1, "V0", vol_patches_open[oi2].v₀)
-        change_patch_property(MAIN_PATH*"states/final.vol_patches", oi1, "H0", vol_patches_open[oi2].h₀)
-        change_patch_property(MAIN_PATH*"states/final.vol_patches", oi1, "KA", vol_patches_open[oi2].Kₐ)
-    end
     # check if energy.csv has only one line, if so, then the run was not finished
     if length(readlines(MAIN_PATH*"energy.csv")) == 1
         coords, indep_coords, vol_patches, rem_patches = load_state(MAIN_PATH*"states/final.coords", MAIN_PATH*"states/final.vol_patches", MAIN_PATH*"states/final.rem_patches")
         # run the minimization
-        coords, indep_coords, vol_patches, rem_patches = minimize(coords, indep_coords, vol_patches, rem_patches, μᵥ=1.0e6, μᵩ=1.0e6, remesh_spacing=1, mult_val=0.999, final_ΔEₘₐₓ=2.5e-4, initial_ΔEₘₐₓ=1e-3, max_steps=50000)
+        coords, indep_coords, vol_patches, rem_patches = minimize(coords, indep_coords, vol_patches, rem_patches, μᵥ=1.0e5, μᵩ=1.0e5, remesh_spacing=1, mult_val=1.0, final_ΔEₘₐₓ=2.5e-4, initial_ΔEₘₐₓ=1e-3)
     end
 else
     # the main part of the run
@@ -68,17 +57,15 @@ else
     # find the 2nd largest index
     order1 = sortperm(Vs, rev=true)
     # make an initial configuration of the ADE model to get all the required volumes from
-    vol_patches_open = vesicle_manuscript_ADE(ν=parse(Float64, ν_CURR), m₀_4π=parse(Float64, m₀_4π_CURR), is_open = true, h₀=0.5)[3]
+    vol_patches_open = vesicle_manuscript_ADE(ν=parse(Float64, ν_CURR), m₀_4π=parse(Float64, m₀_4π_CURR), is_open = true)[3]
     order2 = sortperm([vol_patches_open[i].v₀ for i in 1:3], rev=true)
     for (oi1, oi2) in zip(order1, order2)
         change_patch_property(MAIN_PATH*"initial.vol_patches", oi1, "V0", vol_patches_open[oi2].v₀)
-        change_patch_property(MAIN_PATH*"initial.vol_patches", oi1, "H0", vol_patches_open[oi2].h₀)
-        change_patch_property(MAIN_PATH*"initial.vol_patches", oi1, "KA", vol_patches_open[oi2].Kₐ)
     end
     # load the previous state
     coords, indep_coords, vol_patches, rem_patches = load_state(MAIN_PATH*"initial.coords", MAIN_PATH*"initial.vol_patches", MAIN_PATH*"initial.rem_patches")
     # run the minimization
-    coords, indep_coords, vol_patches, rem_patches = minimize(coords, indep_coords, vol_patches, rem_patches, μᵥ=1.0e6, μᵩ=1.0e6, remesh_spacing=1, mult_val=0.999, final_ΔEₘₐₓ=2.5e-4, initial_ΔEₘₐₓ=1.0, max_steps=50000)
+    coords, indep_coords, vol_patches, rem_patches = minimize(coords, indep_coords, vol_patches, rem_patches, μᵥ=5.0e4, μᵩ=1.0e4, remesh_spacing=1, mult_val=0.999, final_ΔEₘₐₓ=2.5e-4, initial_ΔEₘₐₓ=1.0)
 end
 # remove the fig folder if it exists
 if isdir(MAIN_PATH*"figs")

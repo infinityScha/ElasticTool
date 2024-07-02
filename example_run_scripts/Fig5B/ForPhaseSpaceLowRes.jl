@@ -37,7 +37,7 @@ include("../../ElasticTool.jl")
 # check if the run was already done (final.coords in states folder), if so, don't rerun
 if isfile(MAIN_PATH*"states/final.coords")
     println("The run was already done, running a bit of the final energy to get the final energy value")
-    change_patch_property(MAIN_PATH*"states/final.rem_patches", 1, "RESOLUTION", 1.0)
+    change_patch_property(MAIN_PATH*"states/final.rem_patches", 1, "RESOLUTION", 0.5)
     Vs = [parse(Float64, get_patch_property(MAIN_PATH * "states/final.vol_patches", i, "V0")) for i in 1:3]
     # find the 2nd largest index
     order1 = sortperm(Vs, rev=true)
@@ -63,7 +63,7 @@ else
     cp(PREV_PATH*"states/final.vol_patches", MAIN_PATH*"initial.vol_patches", force=true)
     cp(PREV_PATH*"states/final.rem_patches", MAIN_PATH*"initial.rem_patches", force=true)
     # change previous state resolution to 0.5 nm
-    change_patch_property(MAIN_PATH*"initial.rem_patches", 1, "RESOLUTION", 1.0)
+    change_patch_property(MAIN_PATH*"initial.rem_patches", 1, "RESOLUTION", 0.5)
     Vs = [parse(Float64, get_patch_property(MAIN_PATH * "initial.vol_patches", i, "V0")) for i in 1:3]
     # find the 2nd largest index
     order1 = sortperm(Vs, rev=true)

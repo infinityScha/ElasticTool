@@ -31,9 +31,9 @@ const ENERGY_FACTOR = 1.0
 
 include("../../ElasticTool.jl")
 
-result_names = ["results_fixed/", "results_reversed/", "results_domain/", "results_domain2/"]
+result_names = ["results/", "results_reversed/", "results_domain2/"]
 
-JSs = [-0.2, -0.1, 0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6]
+JSs = [-0.05, 0, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3]
 CHIs = [0, 0.2, 0.4, 0.6, 0.8, 1.0, 1.2, 1.4, 1.6, 1.8, 2.0, 2.2, 2.4, 2.6, 2.8, 3.0]
 
 function get_final_energy(result_name, js, chi)
@@ -192,13 +192,16 @@ for (i, js) in enumerate(JSs)
         JSs_matrix[i, j] = js
         CHIs_matrix[i, j] = chi
         interfaces_matrix[i, j] = how_many_interfaces(which, js, chi)
-        if js < 0.05 && chi == 3.0
-            interfaces_matrix[i, j] = -2
-            println(Φ₀, " ", Φ₁, " ", which)
-        end
-        if js == -0.2 && chi == 2.8
+        if js < 0.05 && which == 3 && interfaces_matrix[i, j] == 1
             interfaces_matrix[i, j] = -2
         end
+        #if js < 0.05 && chi == 3.0
+        #    interfaces_matrix[i, j] = -2
+        #    println(Φ₀, " ", Φ₁, " ", which)
+        #end
+        #if js == -0.2 && chi == 2.8
+        #    interfaces_matrix[i, j] = -2
+        #end
     end
 end
 
@@ -218,7 +221,7 @@ plt.close()
 @pyimport scipy.interpolate as spi
 @pyimport numpy as np
 
-x = range(-0.2, stop=0.6, length=100)
+x = range(-0.05, stop=0.3, length=100)
 y = range(0.0, stop=3.0, length=100)
 grid_x, grid_y = np.meshgrid(x, y)
 
@@ -247,7 +250,8 @@ which_has_min_energy = which_has_min_energy[end:-1:1, :]
 # plot the enrichment heatmap, use larger fontsize
 
 # set large border widths
-fig = plt.figure(figsize=(8, 4))
+fig = plt.figure(figsize=(8, 5))
+#plt.pcolormesh(CHIs_matrix, JSs_matrix, enrichment_matrix, cmap="nipy_spectral", shading="gouraud", alpha=0.5, zorder=0)
 re_enrichment_matrix = np.flip(np.flip(enrichment_matrix, axis=1), axis=0)'
 plt.imshow(re_enrichment_matrix, cmap="nipy_spectral", extent=[CHIs[1], CHIs[end], JSs[1], JSs[end]], aspect="auto", alpha=0.5, zorder=0)
 ax = plt.gca()
@@ -265,10 +269,10 @@ cbar.ax.yaxis.set_tick_params(width=1.5)
 # set the label on the top of the color bar
 cbar.ax.set_title(raw"$\Delta \Phi$", fontsize=20)
 # add a countor line for the 0.05 enrichment, write it next to the line
-plt.contour(CHIs_matrix, JSs_matrix, enrichment_matrix, levels=[0.05], colors="black", linewidths=3, linestyles="--", zorder=2)
-plt.text(2.045, 0.335, "0.05", fontsize=18, color="black")
+plt.contour(CHIs_matrix, JSs_matrix, enrichment_matrix, levels=[0.065], colors="black", linewidths=3, linestyles="--", zorder=2)
+plt.text(1.14, 0.17, "ΔΦ = 0.065", fontsize=18, color="black")
 # add dots in different colors for which has the minimum energy
-colors_dict = Dict(0 => "yellow", 1 => "blue", 2 => "green", 3 => "cyan", 4 => "red", -1 => "black", -2 => "magenta")
+colors_dict = Dict(0 => "yellow", 1 => "blue", 2 => "magenta", 3 => "cyan", 4 => "red", -1 => "black", -2 => "lime")
 for (js, chi, interfaces) in zip(orig_JSs_matrix[:], orig_CHIs_matrix[:], interfaces_matrix[:])
     plt.scatter([chi], [js], color=colors_dict[Int(interfaces)], s=60, edgecolors="black", linewidths=0.75, zorder=3)
 end
@@ -276,7 +280,7 @@ plt.xlabel(raw"$\chi$", fontsize=20)
 plt.ylabel(raw"$\tilde{J}_s$  [nm$^{-1}$]", fontsize=20)
 plt.xticks(fontsize=15)
 plt.yticks(fontsize=15)
-plt.savefig("phase_diagram/enrichment.svg", bbox_inches="tight")
+plt.savefig("phase_diagram/enrichment.pdf", bbox_inches="tight")
 plt.savefig("phase_diagram/enrichment.png", bbox_inches="tight", dpi=300)
 plt.close()
 

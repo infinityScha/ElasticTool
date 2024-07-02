@@ -16,7 +16,7 @@ done
 
 for i in {0..10}
 do
-    for j in {0..10}
+    for j in {0..6}
     do
         echo "Running ForPhaseSpace.jl with nu=${nu[$i]} and dA=${dA[$j]}"
         nohup julia --threads=4 ForPhaseSpace.jl close ${nu[$i]} ${nu[$i]} ${dA_prev[$j]} ${dA[$j]} > curr_close.log
