@@ -34,10 +34,16 @@ Example scripts used to create figures for the paper are provided. The general w
 
 ## Citation
 
-When using this code or some modification of it. please cite the paper (arxiv if needed ***):
+When using this code or some modification of it. please cite the paper:
 
-doi ***
+Lipid Demixing Reduces Energy Barriers for High Curvature Vesicle Budding
+Itay Schachter
+bioRxiv 2024.10.24.620077. https://doi.org/10.1101/2024.10.24.620077 
 
 As the model is based on Ryham's model, please cite his papers as well:
 
-doi ***
+Ryham, Rolf J., et al. "Calculating transition energy barriers and characterizing activation states for steps of fusion." Biophysical journal 110.5 (2016): 1110-1124.
+
+and 
+
+Ryham, Rolf J. "Local changes in lipid composition to match membrane curvature." Computational and Mathematical Biophysics 4.1 (2016).
